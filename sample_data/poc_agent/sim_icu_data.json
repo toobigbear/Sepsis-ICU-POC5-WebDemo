@@ -1,0 +1,30 @@
+{
+  "icu_info": {
+    "hospital": "模拟医院(仿真数据,非真实患者)",
+    "ward": "ICU模拟病区",
+    "note": "本数据为POC手工构造的仿真数据，仅用于技术链路验证"
+  },
+  "patients": [
+    {
+      "patient_id": "SIM_P001",
+      "name": "模拟患者甲",
+      "diagnosis": "重症胰腺炎(原发病)",
+      "baseline": {"hr": 92, "map": 74, "temp": 38.8, "resp_rate": 24, "spo2": 96, "lactate": 1.8, "urine_4h": 200, "norepi_dose": 0.03, "wbc": 12.0, "cr": 85, "plt": 185, "gcs": 15},
+      "current": {"hr": 118, "map": 58, "temp": 39.6, "resp_rate": 35, "spo2": 92, "lactate": 2.6, "urine_4h": 110, "norepi_dose": 0.16, "wbc": 16.5, "cr": 122, "plt": 142, "gcs": 13}
+    },
+    {
+      "patient_id": "SIM_P002",
+      "name": "模拟患者乙",
+      "diagnosis": "重症肺炎(原发病)",
+      "baseline": {"hr": 88, "map": 78, "temp": 38.2, "resp_rate": 21, "spo2": 97, "lactate": 1.5, "urine_4h": 400, "norepi_dose": 0.0, "wbc": 10.5, "cr": 76, "plt": 210, "gcs": 15},
+      "current": {"hr": 104, "map": 70, "temp": 38.6, "resp_rate": 27, "spo2": 95, "lactate": 2.1, "urine_4h": 265, "norepi_dose": 0.02, "wbc": 13.8, "cr": 88, "plt": 196, "gcs": 15}
+    },
+    {
+      "patient_id": "SIM_P003",
+      "name": "模拟患者丙",
+      "diagnosis": "慢性肾病合并肺部感染(原发病)",
+      "baseline": {"hr": 96, "map": 72, "temp": 39.0, "resp_rate": 26, "spo2": 94, "lactate": 2.2, "urine_4h": 240, "norepi_dose": 0.05, "wbc": 14.0, "cr": 152, "plt": 160, "gcs": 14},
+      "current": {"hr": 99, "map": 71, "temp": 38.8, "resp_rate": 27, "spo2": 94, "lactate": 2.3, "urine_4h": 230, "norepi_dose": 0.05, "wbc": 14.6, "cr": 158, "plt": 155, "gcs": 14}
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}模拟患者管理{% endblock %}
+{% block content %}
+
+<section class="card">
+  <h2>模拟患者管理
+    {% if is_sample %}<span class="tag tag-amber">自带示例产物</span>{% endif %}
+  </h2>
+  <p class="note">
+    数据来源：<span class="mono">{{ sim_path }}</span>
+    {% if icu_info %}　|　{{ icu_info.get('hospital', '') }} · {{ icu_info.get('ward', '') }}　|　{{ icu_info.get('note', '') }}{% endif %}
+  </p>
+
+  {% if not rows %}
+  <div class="empty">
+    <p><b>未找到模拟患者数据。</b></p>
+    <p>请确认 POC3/4 Agent 工程已运行并产出 <span class="mono">sim_icu_data.json</span>，
+    并在 <span class="mono">config.py</span> 中将 <span class="mono">POC_AGENT_OUTPUT_DIR</span> 指向该产物目录。</p>
+  </div>
+  {% else %}
+
+  <table class="tbl tbl-vitals">
+    <thead>
+      <tr>
+        <th rowspan="2">患者ID</th>
+        <th rowspan="2">姓名</th>
+        <th rowspan="2">诊断（原发病）</th>
+        {% for v in rows[0].vitals %}<th>{{ v.label }}<br><span class="th-unit">{{ v.unit }}</span></th>{% endfor %}
+        <th rowspan="2">当前风险</th>
+        <th rowspan="2">操作</th>
+      </tr>
+      <tr></tr>
+    </thead>
+    <tbody>
+      {% for r in rows %}
+      <tr>
+        <td class="mono"><b>{{ r.patient_id }}</b></td>
+        <td>{{ r.name }}</td>
+        <td class="small">{{ r.diagnosis }}</td>
+        {% for v in r.vitals %}
+        <td class="vital">
+          <span class="vital-base">{{ v.base }}</span>
+          <span class="vital-arrow">→</span>
+          <span class="vital-cur {{ 'up' if v.trend == 'up' else ('down' if v.trend == 'down' else '') }}">
+            {{ v.cur }}{{ '▲' if v.trend == 'up' else ('▼' if v.trend == 'down' else '') }}
+          </span>
+        </td>
+        {% endfor %}
+        <td>
+          {% if r.level %}<span class="lv lv-{{ r.level }}">{{ r.level }}</span>
+          {% else %}<span class="tag tag-grey">无卡片产物</span>{% endif %}
+        </td>
+        <td class="ops">
+          <form method="post" action="/run-agent" onsubmit="return onRun(this);">
+            <input type="hidden" name="pid" value="{{ r.patient_id }}">
+            <button type="submit" class="btn btn-primary">选中该患者，运行Agent评估</button>
+          </form>
+          <a class="btn-link" href="/agent-result?pid={{ r.patient_id }}">查看已有产物</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <p class="note">
+    说明：生命体征以「基线 → 当前」对照展示（▲ 较基线升高 / ▼ 较基线降低）。
+    点击【运行Agent评估】后，本系统仅通过子进程调用外部 POC3/4 工程入口脚本
+    （<span class="mono">{{ main_script or '(未配置)' }}</span>），
+    业务计算全部由外部工程完成；脚本结束（或未配置脚本）后自动跳转到预警结果页读取产物。
+    {% if not script_ready %}
+    <br><b>当前入口脚本未配置或路径不存在：</b>按钮将直接读取磁盘上已有产物并跳转结果页。
+    如需在线触发，请在 <span class="mono">config.py</span> 配置 <span class="mono">POC_AGENT_MAIN_SCRIPT</span>。
+    {% endif %}
+  </p>
+  {% endif %}
+</section>
+
+<script>
+// 纯展示层小交互：提交后禁用按钮，避免重复触发外部脚本
+function onRun(form) {
+  var btn = form.querySelector('button');
+  btn.disabled = true;
+  btn.textContent = '正在运行外部Agent工程，请稍候…';
+  return true;
+}
+</script>
+
+{% endblock %}

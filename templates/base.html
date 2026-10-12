@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}首页{% endblock %} · 脓毒症ICU预警AI演示系统(POC5)</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+  <!-- 全站强制免责声明：顶部固定展示，禁止移除 -->
+  <div class="disclaimer-bar">{{ disclaimer }}</div>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-icon">ICU</span>
+        <div class="brand-text">
+          <div class="brand-title">脓毒症ICU预警AI演示系统</div>
+          <div class="brand-sub">Sepsis-ICU-POC5-WebDemo · 第5期工程 · 科研演示外壳</div>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="/index"        class="{{ 'active' if active == 'index' }}">首页</a>
+        <a href="/patients"     class="{{ 'active' if active == 'patients' }}">模拟患者管理</a>
+        <a href="/agent-result" class="{{ 'active' if active == 'agent' }}">Agent预警演示</a>
+        <a href="/lakehouse"    class="{{ 'active' if active == 'lakehouse' }}">湖仓数据浏览</a>
+        <a href="/audit-log"    class="{{ 'active' if active == 'audit' }}">审计日志查看</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    {% if msg %}
+    <div class="flash">{{ msg }}</div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    POC-5 科研演示外壳 · 仅读取 POC1~POC4 落盘产物并渲染 · 不含任何业务计算 ·
+    全部数据为模拟仿真患者数据，不用于临床诊疗
+  </footer>
+
+</body>
+</html>

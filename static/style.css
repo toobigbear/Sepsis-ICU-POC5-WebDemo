@@ -1,0 +1,404 @@
+/* ==========================================================================
+   Sepsis-ICU-POC5-WebDemo 全站样式
+   风格：简洁医疗系统浅色风，适合会议室投影演示
+   分级配色：L3 高危橙红 / L2 中危黄 / L1 低危灰
+   ========================================================================== */
+
+:root {
+  --c-bg:        #f3f6f9;
+  --c-card:      #ffffff;
+  --c-border:    #e2e8f0;
+  --c-text:      #24303a;
+  --c-muted:     #6b7a89;
+  --c-primary:   #0b5cad;   /* 医疗蓝 */
+  --c-primary-d: #094a8a;
+  --c-l3:        #e64a19;   /* 高危橙红 */
+  --c-l3-bg:     #fdf0e9;
+  --c-l2:        #b78900;   /* 中危黄（文字用深黄保证可读） */
+  --c-l2-badge:  #f9c32b;
+  --c-l2-bg:     #fdf8e7;
+  --c-l1:        #8a939c;   /* 低危灰 */
+  --c-l1-bg:     #f2f4f6;
+  --c-green:     #1e8e5a;
+  --c-red:       #c62828;
+  --c-amber:     #b26a00;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC",
+               "WenQuanYi Micro Hei", "Segoe UI", sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  padding-top: 40px; /* 给顶部固定免责声明让位 */
+}
+
+/* ---------- 顶部固定强制免责声明 ---------- */
+.disclaimer-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  background: #fdecea;
+  color: #a11f1f;
+  font-size: 13px;
+  font-weight: 600;
+  border-bottom: 1px solid #f3c8c8;
+  text-align: center;
+}
+
+/* ---------- 顶栏与导航 ---------- */
+.topbar {
+  background: var(--c-card);
+  border-bottom: 1px solid var(--c-border);
+  box-shadow: 0 1px 3px rgba(20, 40, 60, .06);
+}
+.topbar-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-icon {
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--c-primary);
+  color: #fff; font-weight: 700; border-radius: 8px;
+  letter-spacing: 1px;
+}
+.brand-title { font-size: 18px; font-weight: 700; color: var(--c-primary-d); }
+.brand-sub   { font-size: 12px; color: var(--c-muted); }
+
+.nav { display: flex; gap: 4px; flex-wrap: wrap; }
+.nav a {
+  padding: 8px 16px;
+  border-radius: 6px;
+  color: var(--c-text);
+  text-decoration: none;
+  font-size: 14.5px;
+  border-bottom: 2px solid transparent;
+}
+.nav a:hover { background: #eef4fa; color: var(--c-primary); }
+.nav a.active {
+  color: var(--c-primary);
+  font-weight: 700;
+  border-bottom: 2px solid var(--c-primary);
+  border-radius: 6px 6px 0 0;
+}
+
+/* ---------- 布局 ---------- */
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 20px 24px 40px;
+}
+.card {
+  background: var(--c-card);
+  border: 1px solid var(--c-border);
+  border-radius: 10px;
+  padding: 20px 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 2px rgba(20, 40, 60, .04);
+}
+.card h1 { font-size: 22px; margin: 0 0 12px; color: var(--c-primary-d); }
+.card h2 { font-size: 18px; margin: 0 0 14px; color: var(--c-primary-d);
+           padding-bottom: 8px; border-bottom: 1px solid var(--c-border); }
+.card h3 { font-size: 15.5px; margin: 14px 0 8px; }
+
+.hero-desc { margin: 6px 0; }
+.muted { color: var(--c-muted); font-size: 14px; }
+.small { font-size: 12.5px; }
+.mono  { font-family: Consolas, "Courier New", monospace; font-size: 13px; }
+
+.note {
+  background: #f0f6fc;
+  border-left: 3px solid var(--c-primary);
+  padding: 10px 14px;
+  border-radius: 0 6px 6px 0;
+  color: #33506b;
+  font-size: 13.5px;
+  margin: 12px 0 0;
+}
+.empty {
+  background: #fbfcfd;
+  border: 1px dashed var(--c-border);
+  border-radius: 8px;
+  padding: 18px 20px;
+  color: var(--c-muted);
+}
+.flash {
+  background: #e8f3ff;
+  border: 1px solid #bcd8f5;
+  color: #144f86;
+  border-radius: 8px;
+  padding: 10px 16px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+/* ---------- 网格 ---------- */
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+@media (max-width: 1000px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 800px)  { .grid-4, .grid-3 { grid-template-columns: 1fr; } }
+
+.nav-card { text-decoration: none; color: inherit; transition: box-shadow .15s ease; display: block; }
+.nav-card:hover { box-shadow: 0 4px 14px rgba(11, 92, 173, .14); border-color: #bcd6ee; }
+.nav-card h3 { margin: 6px 0; color: var(--c-primary-d); }
+.nav-card p  { margin: 0; color: var(--c-muted); font-size: 13.5px; }
+.nav-card-icon {
+  width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  background: #e9f2fb; color: var(--c-primary);
+  border-radius: 50%; font-size: 17px; font-weight: 700;
+}
+
+/* ---------- 标签 / 风险等级 ---------- */
+.tag {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  vertical-align: middle;
+}
+.tag-blue  { background: #e3effb; color: var(--c-primary); }
+.tag-green { background: #e2f4ea; color: var(--c-green); }
+.tag-grey  { background: #eceff2; color: var(--c-muted); }
+.tag-amber { background: #fdf1dd; color: var(--c-amber); }
+.tag-red   { background: #fdecea; color: var(--c-red); }
+
+.lv {
+  display: inline-block;
+  min-width: 34px;
+  text-align: center;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 13px;
+  color: #fff;
+}
+.lv-big { font-size: 20px; padding: 6px 14px; border-radius: 6px; }
+.lv-L3 { background: var(--c-l3); }               /* 高危：醒目橙红 */
+.lv-L2 { background: var(--c-l2-badge); color: #5d4700; } /* 中危：黄 */
+.lv-L1 { background: var(--c-l1); }               /* 低危：灰 */
+
+/* ---------- 表格 ---------- */
+.tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.tbl th, .tbl td {
+  border: 1px solid var(--c-border);
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: middle;
+}
+.tbl thead th {
+  background: #eef3f8;
+  color: #2c4a66;
+  font-weight: 700;
+}
+.tbl tbody tr:nth-child(even) { background: #fafcfe; }
+.tbl tbody tr:hover { background: #f0f7fd; }
+.th-unit { font-weight: 400; color: var(--c-muted); font-size: 11.5px; }
+
+.tbl-vitals { font-size: 13px; }
+.tbl-vitals .vital { white-space: nowrap; text-align: center; }
+.vital-base { color: var(--c-muted); }
+.vital-arrow { color: #b6c2cd; margin: 0 3px; }
+.vital-cur { font-weight: 700; }
+.vital-cur.up   { color: #c6410d; }
+.vital-cur.down { color: #1668b0; }
+
+.tbl .ops { white-space: nowrap; }
+.tbl .ops form { display: inline-block; margin: 0; }
+
+/* ---------- 按钮 ---------- */
+.btn {
+  display: inline-block;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn-primary { background: var(--c-primary); color: #fff; }
+.btn-primary:hover { background: var(--c-primary-d); }
+.btn-primary:disabled { background: #9db8cf; cursor: wait; }
+.btn-sm { padding: 5px 12px; font-size: 12.5px; }
+.btn-link {
+  display: inline-block;
+  margin-left: 8px;
+  color: var(--c-primary);
+  font-size: 13px;
+}
+
+/* ---------- 患者信息条 ---------- */
+.pinfo {
+  display: flex; flex-wrap: wrap; gap: 8px 26px;
+  background: #f7fafc;
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 14px;
+}
+
+/* ---------- 预警卡片 ---------- */
+.alert-card {
+  border-radius: 10px;
+  border: 1px solid var(--c-border);
+  border-left-width: 8px;
+  margin-bottom: 20px;
+  background: #fff;
+  overflow: hidden;
+}
+.alert-L3 { border-left-color: var(--c-l3); background: linear-gradient(var(--c-l3-bg), #fff 55%); }
+.alert-L2 { border-left-color: var(--c-l2-badge); background: linear-gradient(var(--c-l2-bg), #fff 55%); }
+.alert-L1 { border-left-color: var(--c-l1); background: linear-gradient(var(--c-l1-bg), #fff 55%); }
+
+.alert-head {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+  padding: 18px 24px 6px;
+}
+.alert-level { display: flex; align-items: center; gap: 14px; }
+.alert-level-text { font-size: 17px; font-weight: 700; }
+.alert-L3 .alert-level-text { color: var(--c-l3); }
+.alert-L2 .alert-level-text { color: var(--c-l2); }
+.alert-L1 .alert-level-text { color: var(--c-l1); }
+
+.alert-nums { display: flex; gap: 28px; }
+.alert-num { text-align: center; }
+.alert-num .num {
+  display: block;
+  font-size: 30px;
+  font-weight: 800;
+  font-family: Consolas, monospace;
+  line-height: 1.1;
+}
+.alert-L3 .alert-num .num { color: var(--c-l3); }
+.alert-L2 .alert-num .num { color: var(--c-l2); }
+.alert-num .num-label { font-size: 12px; color: var(--c-muted); }
+
+.alert-body { padding: 6px 24px 18px; }
+.drivers li, .checklist li { margin: 5px 0; }
+.drivers li::marker { color: var(--c-l3); }
+.checklist li::marker { content: "☐  "; color: var(--c-primary); }
+
+.card-disclaimer {
+  margin-top: 16px;
+  padding: 8px 12px;
+  background: #fdf6ec;
+  border: 1px solid #f5e3c3;
+  border-radius: 6px;
+  color: #8a5a00;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.silent-panel { border-left: 8px solid var(--c-l1); }
+.silent-panel h2 { border-bottom: none; margin-bottom: 6px; color: var(--c-text); }
+
+/* ---------- 证据列表 ---------- */
+.evidence { padding-left: 0; list-style: none; }
+.evidence li {
+  border: 1px solid var(--c-border);
+  border-left: 3px solid var(--c-primary);
+  border-radius: 0 6px 6px 0;
+  background: #fbfdff;
+  padding: 10px 14px;
+  margin: 8px 0;
+  font-size: 14px;
+}
+.evidence li p { margin: 0 0 6px; }
+
+/* ---------- 折叠面板 / 原始日志 ---------- */
+details.fold summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--c-primary-d);
+  font-size: 15px;
+  padding: 4px 0;
+  outline: none;
+}
+details.fold summary::marker { color: var(--c-primary); }
+details.fold[open] summary { margin-bottom: 10px; }
+
+pre.trace {
+  background: #f7f9fb;
+  border: 1px solid var(--c-border);
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 12.5px;
+  line-height: 1.6;
+  max-height: 440px;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+  color: #2d3a46;
+}
+pre.trace-card { max-height: 300px; background: #fffcf7; }
+
+/* ---------- 湖仓层卡片 ---------- */
+.layer-card {
+  border: 1px solid var(--c-border);
+  border-top-width: 5px;
+  border-radius: 8px;
+  padding: 14px 18px;
+  background: #fbfcfe;
+}
+.layer-card h3 { margin-top: 0; }
+.layer-card p { margin: 0; color: var(--c-muted); font-size: 13.5px; }
+.layer-ods { border-top-color: #5b8def; }
+.layer-dwd { border-top-color: #37a28b; }
+.layer-ads { border-top-color: #e09b2d; }
+
+.snap-form { margin: 10px 0 18px; display: flex; align-items: center; gap: 10px; }
+.snap-form select {
+  min-width: 420px;
+  padding: 8px 10px;
+  border: 1px solid #c3d2e0;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: Consolas, monospace;
+  background: #fff;
+}
+
+.stat-grid { margin: 6px 0 10px; }
+.stat {
+  background: #f7fafc;
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  padding: 14px;
+  text-align: center;
+}
+.stat-num { font-size: 22px; font-weight: 800; color: var(--c-primary-d); }
+.stat-label { font-size: 12.5px; color: var(--c-muted); margin-top: 4px; }
+
+/* ---------- 页脚 ---------- */
+.footer {
+  text-align: center;
+  color: var(--c-muted);
+  font-size: 12.5px;
+  padding: 18px 12px 28px;
+  border-top: 1px solid var(--c-border);
+  background: #f8fafc;
+}

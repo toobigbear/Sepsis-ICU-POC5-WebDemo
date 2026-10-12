@@ -1,0 +1,31 @@
+{
+  "_origin": "poc5_sample_format_example",
+  "_comment": "本文件是 POC-5 自带的【格式示例】，用于演示湖仓页渲染效果；正式演示时请由 config.py 指向 POC2 湖仓工程真实产物。",
+  "table": "ads_sepsis_multimodal",
+  "snapshots": [
+    {
+      "snapshot_id": 3051729675574597000,
+      "timestamp_ms": 1759804800000,
+      "operation": "append",
+      "patient_count": 96,
+      "multimodal_match_rate": 0.8021,
+      "summary": {"added-records": "96", "total-records": "96"}
+    },
+    {
+      "snapshot_id": 3051729675574597001,
+      "timestamp_ms": 1759891200000,
+      "operation": "append",
+      "patient_count": 128,
+      "multimodal_match_rate": 0.8359,
+      "summary": {"added-records": "32", "total-records": "128"}
+    },
+    {
+      "snapshot_id": 3051729675574597002,
+      "timestamp_ms": 1759977600000,
+      "operation": "append",
+      "patient_count": 152,
+      "multimodal_match_rate": 0.8618,
+      "summary": {"added-records": "24", "total-records": "152"}
+    }
+  ]
+}

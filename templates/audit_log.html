@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}审计日志查看{% endblock %}
+{% block content %}
+
+<section class="card">
+  <h2>Agent 运行审计总览
+    {% if is_sample %}<span class="tag tag-amber">自带示例产物</span>{% endif %}
+  </h2>
+  <p class="note">以患者为维度汇总每一次 Agent 运行记录；点击【查看完整审计详情】可展开该次运行的原始审计追踪。</p>
+
+  {% if records %}
+  <table class="tbl">
+    <thead>
+      <tr><th>患者ID</th><th>姓名</th><th>最近运行/产物时间</th><th>风险等级</th><th>最终状态</th><th>操作</th></tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td class="mono"><b>{{ r.pid }}</b></td>
+        <td>{{ r.name or '—' }}</td>
+        <td class="small">{{ r.time or '—' }}</td>
+        <td>
+          {% if r.level %}<span class="lv lv-{{ r.level }}">{{ r.level }}</span>
+          {% else %}<span class="tag tag-grey">静默</span>{% endif %}
+        </td>
+        <td>{{ r.status }}</td>
+        <td><a class="btn btn-primary btn-sm" href="/audit-log/detail?pid={{ r.pid }}">查看完整审计详情</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty"><p>未发现任何 Agent 运行记录（无患者清单、无预警卡片产物）。</p></div>
+  {% endif %}
+</section>
+
+<section class="card">
+  <h2>审计追踪文件（agent_trace*.jsonl）</h2>
+  {% if trace_files %}
+  <table class="tbl">
+    <thead>
+      <tr><th>文件名</th><th>路径</th><th>行数</th><th>大小</th><th>时间范围</th><th>事件类型</th><th>操作</th></tr>
+    </thead>
+    <tbody>
+      {% for t in trace_files %}
+      <tr>
+        <td class="mono">{{ t.name }}</td>
+        <td class="mono small">{{ t.path }}</td>
+        <td>{{ t.lines }}</td>
+        <td>{{ t.size_kb }} KB</td>
+        <td class="small">{{ t.first_ts or '—' }}<br>{{ t.last_ts or '' }}</td>
+        <td class="small">{{ t.events|join(', ') }}</td>
+        <td><a class="btn btn-primary btn-sm" href="/audit-log/detail?file={{ t.name }}">查看文件全文</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="note">未在 Agent 产物目录中发现 agent_trace*.jsonl 审计文件。
+    请确认外部 POC3/4 工程已运行并落盘审计日志。</p>
+  {% endif %}
+</section>
+
+{% endblock %}

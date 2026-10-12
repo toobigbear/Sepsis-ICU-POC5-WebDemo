@@ -1,0 +1,14 @@
+{
+  "_origin": "poc5_sample_format_example",
+  "_comment": "本文件是 POC-5 自带的【格式示例】，用于演示湖仓页渲染效果；正式演示时请由 config.py 指向 POC2 湖仓工程真实产物。",
+  "total_patients": 152,
+  "clinical_records": 152,
+  "image_records": 138,
+  "matched": 131,
+  "match_rate": 0.8618,
+  "layers": {
+    "ODS": "原始临床数据 + 影像数据原始接入（152 名模拟患者）",
+    "DWD": "清洗标准化后的可建模样本 152 条，患者主索引对齐",
+    "ADS": "临床-影像多模态融合宽表：138 条影像记录中 131 条成功匹配"
+  }
+}

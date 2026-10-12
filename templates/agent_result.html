@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% block title %}Agent预警演示{% endblock %}
+{% block content %}
+
+{% if not pid %}
+<!-- ===================== 未选择患者：展示患者选择清单 ===================== -->
+<section class="card">
+  <h2>Agent预警演示 <span class="tag tag-blue">请选择患者</span></h2>
+  <p class="note">从下方清单选择一名模拟患者查看预警结果，或先到
+    <a href="/patients">【模拟患者管理】</a> 页发起一次新的 Agent 评估。</p>
+  {% if rows %}
+  <table class="tbl">
+    <thead><tr><th>患者ID</th><th>姓名</th><th>诊断（原发病）</th><th>当前风险</th><th>操作</th></tr></thead>
+    <tbody>
+      {% for r in rows %}
+      <tr>
+        <td class="mono"><b>{{ r.patient_id }}</b></td>
+        <td>{{ r.name }}</td>
+        <td>{{ r.diagnosis }}</td>
+        <td>{% if r.level %}<span class="lv lv-{{ r.level }}">{{ r.level }}</span>{% else %}<span class="tag tag-grey">无卡片产物</span>{% endif %}</td>
+        <td><a class="btn btn-primary btn-sm" href="/agent-result?pid={{ r.patient_id }}">查看预警结果</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty"><p>未找到模拟患者数据，请先在 config.py 中配置 POC3/4 产物目录。</p></div>
+  {% endif %}
+</section>
+
+{% else %}
+<!-- ===================== 指定患者：渲染预警结果 ===================== -->
+
+<section class="card">
+  <h2>Agent 预警结果 · <span class="mono">{{ pid }}</span>
+    {% if is_sample %}<span class="tag tag-amber">自带示例产物</span>{% endif %}
+  </h2>
+
+  {% if patient %}
+  <div class="pinfo">
+    <span><b>姓名：</b>{{ patient.get('name', '') }}</span>
+    <span><b>诊断：</b>{{ patient.get('diagnosis', '') }}</span>
+    <span><b>心率：</b>{{ patient.get('current', {}).get('hr', '—') }} 次/分</span>
+    <span><b>MAP：</b>{{ patient.get('current', {}).get('map', '—') }} mmHg</span>
+    <span><b>SpO2：</b>{{ patient.get('current', {}).get('spo2', '—') }}%</span>
+    <span><b>血乳酸：</b>{{ patient.get('current', {}).get('lactate', '—') }} mmol/L</span>
+    <span><b>4h尿量：</b>{{ patient.get('current', {}).get('urine_4h', '—') }} mL</span>
+    <span><b>去甲肾上腺素：</b>{{ patient.get('current', {}).get('norepi_dose', '—') }} μg/kg/min</span>
+  </div>
+  {% else %}
+  <p class="note">患者基础信息未在 sim_icu_data.json 中找到（仅展示预警卡片产物内容）。</p>
+  {% endif %}
+</section>
+
+{% if card %}
+<!-- ===================== 预警卡片（Alert Card） ===================== -->
+<section class="alert-card alert-{{ card.level or 'L1' }}">
+  <div class="alert-head">
+    <div class="alert-level">
+      <span class="lv lv-{{ card.level or 'L1' }} lv-big">{{ card.level or '—' }}</span>
+      <span class="alert-level-text">
+        {% if card.level == 'L3' %}高危预警 · 需立即关注
+        {% elif card.level == 'L2' %}中危预警 · 建议密切观察
+        {% elif card.level == 'L1' %}低危 · 常规监测
+        {% else %}风险等级未分级{% endif %}
+      </span>
+    </div>
+    <div class="alert-nums">
+      {% if card.probability is not none %}
+      <div class="alert-num"><span class="num">{{ '%.0f' % (card.probability * 100) }}%</span><span class="num-label">风险概率</span></div>
+      {% endif %}
+      {% if card.score is not none %}
+      <div class="alert-num"><span class="num">{{ card.score }}</span><span class="num-label">风险评分</span></div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="alert-body">
+    {% if card.drivers %}
+    <h3>恶化驱动因子</h3>
+    <ul class="drivers">
+      {% for d in card.drivers %}<li>{{ d }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if card.level == 'L3' %}
+    <h3>复查清单（L3 高危附加）</h3>
+    {% if card.checklist %}
+    <ul class="checklist">
+      {% for c in card.checklist %}<li>{{ c }}</li>{% endfor %}
+    </ul>
+    {% else %}
+    <p class="note">当前产物为文本版预警卡片，未包含复查清单字段；若外部工程输出 JSON 版
+      <span class="mono">alert_card_{{ pid }}.json</span>（含 checklist 字段），此处将自动渲染完整复查清单。</p>
+    {% endif %}
+    {% endif %}
+
+    <p class="card-disclaimer">本提示由 AI 辅助生成，仅供临床参考，不能替代医师判断。</p>
+    <p class="note">产物文件：<span class="mono">{{ card.path }}</span>（{{ card.kind }} 格式 · {{ card.mtime }}）</p>
+  </div>
+</section>
+
+{% else %}
+<!-- ===================== 无卡片：低危静默 ===================== -->
+<section class="card silent-panel">
+  <h2><span class="lv lv-L1 lv-big">L1</span> 低危静默</h2>
+  <p>未在产物目录中发现 <span class="mono">{{ pid }}</span> 的预警卡片文件。</p>
+  <p>按 POC3/4 预警 Agent 设计：<b>L1 低危患者执行静默策略，不输出临床预警卡片，仅留存审计日志</b>；
+  也可能是该患者尚未运行过 Agent 评估（可先到 <a href="/patients">模拟患者管理</a> 页发起评估）。</p>
+</section>
+{% endif %}
+
+<!-- ===================== RAG 循证证据 ===================== -->
+<section class="card">
+  <h2>RAG 循证证据（SSC 指南 / 检验指标知识库）</h2>
+  {% if card and card.evidence %}
+  <ul class="evidence">
+    {% for e in card.evidence %}
+    <li>
+      {% if e is mapping %}
+        <p>{{ e.get('text', e.get('snippet', e)) }}</p>
+        <span class="tag tag-blue">{{ e.get('source', e.get('doc', '知识库')) }}</span>
+      {% else %}
+        {{ e }}
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="note">当前预警卡片产物中未包含 RAG 证据片段字段。
+    若外部工程在 JSON 版预警卡片中输出 <span class="mono">evidence / rag_evidence / citations</span> 字段
+    （含来源标记），此处将自动渲染 SSC 指南与指标知识库的证据片段。</p>
+  {% endif %}
+</section>
+
+<!-- ===================== JEV 结构化双闸自检（折叠面板） ===================== -->
+<details class="card fold">
+  <summary>JEV 结构化双闸自检结果（点击展开）</summary>
+  {% if card and card.jev %}
+  <table class="tbl">
+    <thead><tr><th>自检闸</th><th>判定结果</th><th>说明</th></tr></thead>
+    <tbody>
+      {% for k, v in card.jev.items() %}
+      <tr>
+        <td>{{ k }}</td>
+        <td>{% if v in (true, 'pass', 'PASS', '通过') %}<span class="tag tag-green">通过</span>
+            {% elif v in (false, 'fail', 'FAIL', '不通过') %}<span class="tag tag-red">不通过</span>
+            {% else %}{{ v }}{% endif %}</td>
+        <td class="small">{{ v if v is string else '' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <pre class="trace">{{ card.jev | tojson(indent=2) }}</pre>
+  {% else %}
+  <p class="note">当前产物未包含 JEV 自检结构化结果（数字一致度 / 边界检查 / 证据充分性）。
+    若外部工程在 JSON 版预警卡片中输出 <span class="mono">jev / jev_check / self_check</span> 字段，此处将自动渲染；
+    相关过程也可在下方审计追踪原始日志中检索 <span class="mono">JEV</span> 事件查看。</p>
+  {% endif %}
+</details>
+
+<!-- ===================== agent_trace.jsonl 审计追踪（折叠面板） ===================== -->
+<details class="card fold">
+  <summary>本次运行完整审计追踪 agent_trace.jsonl（点击展开，可滚动浏览）</summary>
+  {% if trace_lines %}
+  <p class="note">共筛选出 {{ trace_lines|length }} 行与 <span class="mono">{{ pid }}</span> 相关的审计记录
+    （来自 {{ trace_files_n }} 个 trace 文件{% if trace_truncated %}，已按上限截断{% endif %}）。
+    Agent 九步闭环：感知 → 风险预测 → 分级路由 → RAG 取证 → LLM 转译 → JEV 双闸自检 → 护栏 → 执行 → 留痕。</p>
+  <pre class="trace">{% for l in trace_lines %}{{ l.raw }}
+{% endfor %}</pre>
+  {% else %}
+  <p class="note">未在产物目录的 agent_trace*.jsonl 中检索到与 <span class="mono">{{ pid }}</span> 相关的审计行。
+    请确认外部 Agent 工程已对该患者运行并落盘审计日志。</p>
+  {% endif %}
+</details>
+
+{% endif %}
+{% endblock %}

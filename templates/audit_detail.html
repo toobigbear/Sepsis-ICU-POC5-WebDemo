@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}审计详情{% endblock %}
+{% block content %}
+
+<section class="card">
+  <h2>{{ title }}
+    {% if is_sample %}<span class="tag tag-amber">自带示例产物</span>{% endif %}
+  </h2>
+  <p><a class="btn-link" href="/audit-log">← 返回审计总览</a></p>
+
+  {% if card %}
+  <h3>预警卡片产物原文（{{ card.path }}）</h3>
+  <pre class="trace trace-card">{{ card.raw_text }}</pre>
+  {% elif pid %}
+  <p class="note">该患者无预警卡片产物（低危静默 / 未运行），仅展示审计日志。</p>
+  {% endif %}
+
+  {% if lines %}
+  <h3>原始审计日志（共 {{ lines|length }} 行{% if truncated %}，已按上限截断{% endif %}）</h3>
+  <pre class="trace">{% for l in lines %}{{ l.raw }}
+{% endfor %}</pre>
+  {% else %}
+  <p class="note">没有可展示的审计行。</p>
+  {% endif %}
+</section>
+
+{% endblock %}

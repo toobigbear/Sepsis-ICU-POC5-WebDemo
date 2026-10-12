@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}湖仓数据浏览{% endblock %}
+{% block content %}
+
+<section class="card">
+  <h2>湖仓一体化数据浏览（POC2 · Apache Iceberg）
+    {% if info.is_sample %}<span class="tag tag-amber">自带示例产物</span>{% endif %}
+  </h2>
+  <p class="note">
+    产物目录：<span class="mono">{{ info.dir or '(未找到)' }}</span>
+    {% if info.files %}　|　发现 {{ info.files|length }} 个 JSON 产物{% endif %}
+    {% if info.snap_path %}　|　快照来源：<span class="mono small">{{ info.snap_path }}</span>{% endif %}
+    {% for n in info.notes %}<br>{{ n }}{% endfor %}
+  </p>
+
+  <!-- ODS / DWD / ADS 三层说明 -->
+  <div class="grid-3">
+    <div class="layer-card layer-ods">
+      <h3>ODS 原始层</h3>
+      <p>原始临床数据（检验、生命体征）与影像数据的原始接入，不做加工，保留最完整的数据原貌，支持溯源。</p>
+    </div>
+    <div class="layer-card layer-dwd">
+      <h3>DWD 明细层</h3>
+      <p>对 ODS 数据进行清洗、标准化与质量校验，形成可建模的明细数据，按患者主索引关联对齐。</p>
+    </div>
+    <div class="layer-card layer-ads">
+      <h3>ADS 应用层</h3>
+      <p>面向科研场景的多模态融合宽表（临床-影像匹配），直接支撑模型训练、评测与可复现分析。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 历史快照选择 -->
+<section class="card">
+  <h2>Iceberg 历史快照（时间旅行）</h2>
+  {% if snapshots %}
+  <form method="get" action="/lakehouse" class="snap-form">
+    <label for="snapshot_id">选择快照：</label>
+    <select name="snapshot_id" id="snapshot_id" onchange="this.form.submit()">
+      {% for s in snapshots %}
+      <option value="{{ s.snapshot_id }}" {{ 'selected' if selected and s.snapshot_id == selected.snapshot_id }}>
+        快照 {{ s.snapshot_id }} · {{ s.ts or '时间未知' }}{{ '（最新）' if loop.first }}
+      </option>
+      {% endfor %}
+    </select>
+    <noscript><button type="submit" class="btn btn-primary btn-sm">查看</button></noscript>
+  </form>
+
+  {% if selected %}
+  <div class="grid-3 stat-grid">
+    <div class="stat">
+      <div class="stat-num mono">{{ selected.snapshot_id }}</div>
+      <div class="stat-label">快照 ID</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">{{ selected.ts or '—' }}</div>
+      <div class="stat-label">提交时间</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">{{ selected.operation or '—' }}</div>
+      <div class="stat-label">操作类型</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">{{ selected.patient_count if selected.patient_count is not none else '—' }}</div>
+      <div class="stat-label">患者样本数</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">
+        {% if selected.match_rate is not none and selected.match_rate is number %}
+          {{ '%.1f' % (selected.match_rate * 100) }}%
+        {% else %}—{% endif %}
+      </div>
+      <div class="stat-label">临床-影像多模态匹配率</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">{{ '%.1f' % ((snapshots|length) / 1) }}</div>
+      <div class="stat-label">历史快照总数</div>
+    </div>
+  </div>
+
+  <details class="fold">
+    <summary>查看该快照原始元数据 JSON</summary>
+    <pre class="trace">{{ selected.raw | tojson(indent=2) }}</pre>
+  </details>
+  {% endif %}
+
+  <p class="note">演示说明：Iceberg 快照时间旅行能力可将数据集回滚到任意历史提交点，
+    保证同一批科研实验随时可复现相同的数据视图。</p>
+
+  {% else %}
+  <div class="empty">
+    <p><b>未识别到 Iceberg 快照元数据。</b></p>
+    {% for n in info.notes %}<p>{{ n }}</p>{% endfor %}
+    <p>请在 config.py 中将 <span class="mono">POC2_LAKEHOUSE_OUTPUT_DIR</span> 指向 POC2 湖仓工程产物目录；
+    期望产物为包含 <span class="mono">snapshots</span> 列表的快照元数据 JSON。</p>
+  </div>
+  {% endif %}
+</section>
+
+<!-- 多模态融合统计报告 -->
+<section class="card">
+  <h2>多模态融合统计报告</h2>
+  {% if fusion_stats %}
+  <table class="tbl">
+    <thead><tr><th>指标</th><th>数值</th></tr></thead>
+    <tbody>
+      {% for s in fusion_stats %}
+      <tr><td>{{ s.label }}</td><td><b>{{ s.value }}</b></td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p class="note">报告文件：<span class="mono">{{ info.fusion_path }}</span></p>
+  {% else %}
+  <p class="note">未识别到多模态融合统计报告 JSON（期望含
+    <span class="mono">match_rate / multimodal_match_rate</span> 等字段）。</p>
+  {% endif %}
+</section>
+
+{% endblock %}

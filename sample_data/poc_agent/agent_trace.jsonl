@@ -1,0 +1,21 @@
+{"ts": "2026-10-11 09:30:02", "event": "PERCEIVE", "step_cn": "感知", "patient": "SIM_P001", "detail": "读取当前生命体征：HR 118 / MAP 58 / SpO2 92 / 乳酸 2.6 / 4h尿量 110 / 去甲肾上腺素 0.16", "_origin": "poc5_sample"}
+{"ts": "2026-10-11 09:30:03", "event": "RISK_PREDICT", "step_cn": "风险预测", "patient": "SIM_P001", "probability": 0.98, "score": 7.275, "_origin": "poc5_sample"}
+{"ts": "2026-10-11 09:30:03", "event": "ROUTE", "step_cn": "分级路由", "patient": "SIM_P001", "level": "L3", "policy": "输出预警卡片+复查清单", "_origin": "poc5_sample"}
+{"ts": "2026-10-11 09:30:04", "event": "RAG_RETRIEVE", "step_cn": "RAG取证", "patient": "SIM_P001", "docs": ["ssc_guideline_2021", "indicators_dict"], "n_hits": 6, "_origin": "poc5_sample"}
+{"ts": "2026-10-11 09:30:05", "event": "CARD_TRANSLATE", "step_cn": "LLM转译预警卡片", "patient": "SIM_P001", "output": "his_alert_card_SIM_P001.txt", "_origin": "poc5_sample"}
+{"ts": "2026-10-11 09:30:06", "event": "JEV_CHECK", "step_cn": "JEV结构化双闸自检", "patient": "SIM_P001", "numeric_consistency": "pass", "boundary_check": "pass", "evidence_sufficiency": "pass", "_origin": "poc5_sample"}
+{"ts": "2026-10-11 09:30:06", "event": "GUARDRAIL", "step_cn": "护栏", "patient": "SIM_P001", "decision": "放行", "_origin": "poc5_sample"}
+{"ts": "2026-10-11 09:30:07", "event": "EXECUTE", "step_cn": "执行", "patient": "SIM_P001", "action": "输出预警卡片 his_alert_card_SIM_P001.txt", "_origin": "poc5_sample"}
+{"ts": "2026-10-11 09:31:12", "event": "PERCEIVE", "step_cn": "感知", "patient": "SIM_P002", "detail": "读取当前生命体征：HR 104 / MAP 70 / SpO2 95 / 乳酸 2.1 / 4h尿量 265 / 去甲肾上腺素 0.02", "_origin": "poc5_sample"}
+{"ts": "2026-10-11 09:31:13", "event": "RISK_PREDICT", "step_cn": "风险预测", "patient": "SIM_P002", "probability": 0.47, "score": 3.908, "_origin": "poc5_sample"}
+{"ts": "2026-10-11 09:31:13", "event": "ROUTE", "step_cn": "分级路由", "patient": "SIM_P002", "level": "L2", "policy": "输出预警卡片", "_origin": "poc5_sample"}
+{"ts": "2026-10-11 09:31:14", "event": "RAG_RETRIEVE", "step_cn": "RAG取证", "patient": "SIM_P002", "docs": ["ssc_guideline_2021", "indicators_dict"], "n_hits": 5, "_origin": "poc5_sample"}
+{"ts": "2026-10-11 09:31:15", "event": "CARD_TRANSLATE", "step_cn": "LLM转译预警卡片", "patient": "SIM_P002", "output": "his_alert_card_SIM_P002.txt", "_origin": "poc5_sample"}
+{"ts": "2026-10-11 09:31:16", "event": "JEV_CHECK", "step_cn": "JEV结构化双闸自检", "patient": "SIM_P002", "numeric_consistency": "pass", "boundary_check": "pass", "evidence_sufficiency": "pass", "_origin": "poc5_sample"}
+{"ts": "2026-10-11 09:31:16", "event": "GUARDRAIL", "step_cn": "护栏", "patient": "SIM_P002", "decision": "放行", "_origin": "poc5_sample"}
+{"ts": "2026-10-11 09:31:17", "event": "EXECUTE", "step_cn": "执行", "patient": "SIM_P002", "action": "输出预警卡片 his_alert_card_SIM_P002.txt", "_origin": "poc5_sample"}
+{"ts": "2026-10-11 09:32:20", "event": "PERCEIVE", "step_cn": "感知", "patient": "SIM_P003", "detail": "读取当前生命体征：HR 99 / MAP 71 / SpO2 94 / 乳酸 2.3 / 4h尿量 230 / 去甲肾上腺素 0.05", "_origin": "poc5_sample"}
+{"ts": "2026-10-11 09:32:21", "event": "RISK_PREDICT", "step_cn": "风险预测", "patient": "SIM_P003", "probability": 0.12, "score": 1.05, "_origin": "poc5_sample"}
+{"ts": "2026-10-11 09:32:21", "event": "ROUTE", "step_cn": "分级路由", "patient": "SIM_P003", "level": "L1", "policy": "低危静默，不输出预警卡片", "_origin": "poc5_sample"}
+{"ts": "2026-10-11 09:32:22", "event": "GUARDRAIL", "step_cn": "护栏", "patient": "SIM_P003", "decision": "静默通过", "_origin": "poc5_sample"}
+{"ts": "2026-10-11 09:32:22", "event": "EXECUTE", "step_cn": "执行", "patient": "SIM_P003", "action": "静默留痕：仅写入审计日志，不生成预警卡片", "_origin": "poc5_sample"}
